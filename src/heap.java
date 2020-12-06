@@ -131,4 +131,38 @@ public class heap {
         Collections.sort(result, ((o1, o2) -> map.get(o1) - map.get(o2) == 0 ? o1.compareTo(o2) : map.get(o2) - map.get(o1)));
         return result;
     }
+
+    /**
+     * @Author Yang
+     * @Date 2020/12/6 10:20
+     * @Description 根据字符出现频率排序。
+     * 给定一个字符串，将字符串中的字符按照出现频率的逆序进行排序。
+     */
+    public String frequencySort(String s){
+        if(s == null || s.length() == 0)
+            return s;
+        Map<Character, Integer> map = new HashMap<>();
+        for(char digit : s.toCharArray()){
+            map.put(digit, map.getOrDefault(digit, 0) + 1);
+        }
+        PriorityQueue<Character> heap = new PriorityQueue<>(new Comparator<Character>() {
+            @Override
+            public int compare(Character o1, Character o2) {
+                return map.get(o2) - map.get(o1);
+            }
+        });
+        for(Character key : map.keySet()){
+            heap.add(key);
+        }
+        String result = "";
+        while(!heap.isEmpty()){
+            char digit = heap.poll();
+            int index = map.get(digit);
+            while(index > 0){
+                result += digit;
+                index--;
+            }
+        }
+        return result;
+    }
 }
