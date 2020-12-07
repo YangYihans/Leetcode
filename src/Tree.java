@@ -184,6 +184,55 @@ public class Tree {
         node.right = buildTree(preorder, pivotIndex - inLeft + preLeft + 1, preRight, inorder, pivotIndex + 1, inRight);
         return node;
     }
+
+    /**
+     * @Author Yang
+     * @Date 2020/12/7 10:38
+     * @Description 二叉搜索树中第K小的元素
+     * 二叉搜索的树的中序遍历是由小到大排序的，只需要迭代k次就能找到第k小的元素
+     */
+    public static int time = 0;
+    public static int result = 0;
+    public int kthSmallest(TreeNode root, int k){
+        if(root == null){
+            return -1;
+        }
+
+        /*
+        List<Integer> help = new ArrayList<>();
+        search(root, help);
+        int[] result = help.stream().mapToInt(Integer::intValue).toArray();
+        return result[k-1];
+        */
+
+        search(root, k);
+        return result;
+    }
+    public void search(TreeNode root, List<Integer> help){
+        if(root == null){
+            return;
+        }
+        search(root.left, help);
+        help.add(root.val);
+        search(root.right, help);
+    }
+
+    /**
+     * 含有剪枝的中序遍历
+     * @param root 根节点
+     * @param k    遍历次数
+     * time++ 放在左子树遍历后，这样才是中序遍历。
+     */
+    public void search(TreeNode root, int k){
+        //剪枝
+        if(root == null || time > k) return;
+        search(root.left, k);
+        time++;
+        if(time == k)
+            result = root.val;
+        search(root.right, k);
+    }
+
 }
 
 
