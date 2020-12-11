@@ -1,3 +1,6 @@
+import com.sun.org.apache.xml.internal.utils.StringToIntTable;
+
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +22,8 @@ import java.util.List;
  * * * 根据支路完结的条件进行判断， 比如depth达到， length达到， target达到等。
  * * * 对于子集这类题直接添加即可。
  * * * add时候一定要add(new ArrayList<>(path)), 直接add(path) 得到的结果都是[][][][].
+ *
+ * 注意：用于计数和输出结果的static不要放在回溯的参数
  */
 public class backTracking {
     HashMap<Character, String> map = new HashMap<>();
@@ -303,5 +308,174 @@ public class backTracking {
             used[i] = false;
             path.remove(path.size() - 1);
         }
+    }
+    
+    /**
+     * @Author Yang
+     * @Date 2020/12/10 10:35
+     * @Description 排列序列
+     * 将序列按从小到大排序，返回第k个排列
+     * 用于计数和输出结果的static不要放在回溯的参数中
+     */
+    static int count = 0;
+    static String ans = "";
+    public static String getPermutation(int n, int k){
+        String path ="";
+        boolean[] used = new boolean[n+1];
+        tracking_permutation(n, k, 0, used, path);
+        return ans;
+    }
+    public static void tracking_permutation(int n, int k, int depth, boolean[] used, String path){
+        if(depth == n){
+            count++;
+            if(count == k){
+                ans = path;
+            }
+            return;
+        }
+        for(int i = 1; i <= n; i++){
+            if(!used[i]){
+                path += i;
+                used[i] = true;
+                tracking_permutation(n, k, depth+1, used, path);
+                used[i] = false;
+                path = path.substring(0,path.length() - 1);
+            }
+        }
+    }
+
+    /**
+     * 类型二：
+     * Flood 是「洪水」的意思，Flood Fill 直译是「泛洪填充」的意思，体现了洪水能够从一点开始，迅速填满当前位置附近的地势低的区域。
+     *
+     */
+    /**
+     * @Author Yang
+     * @Date 2020/12/11 10:50
+     * @Description 岛屿问题
+     * 求岛屿的数量
+     * 深度优先遍历
+     */
+
+    public static int numIslands(char[][] grid){
+        int row = grid.length;
+        int col = grid[0].length;
+        boolean[][] used = new boolean[row][col];
+        int island_count = 0;
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(grid[i][j] == '1' && !used[i][j]){
+                    track_island(grid, row, col, i, j, used);
+                    island_count++;
+                }
+            }
+        }
+        return island_count;
+    }
+    public static void track_island(char[][] grid, int row, int col, int i, int j, boolean[][] used){
+        /**
+         * used数组用于去重，grid数组的判断条件是 grid[i][j] == '0'
+         */
+        if(i < 0 || j < 0 || i == row || j == col || used[i][j] == true || grid[i][j] == '0'){
+            return;
+        }
+        used[i][j] = true;
+        track_island(grid, row, col, i-1, j, used);
+        track_island(grid, row, col, i+1, j, used);
+        track_island(grid, row, col, i, j-1, used);
+        track_island(grid, row, col, i,j+1, used);
+    }
+
+    /**
+     * @Author Yang
+     * @Date 2020/12/11 12:11
+     * @Description 130.被包围的区域
+     */
+    public void solve(char[][] board){
+        if(board == null || board.length == 0)
+            return;
+        int row = board.length;
+        int col = board[0].length;
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == 'O' && (i == 0 || i == row -1 || j == 0 || j == col -1)){
+                    track_board(board, row, col, i, j);
+                }
+            }
+        }
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] != 'A'){
+                    board[i][j] = 'X';
+                }else{
+                    board[i][j] = 'O';
+                }
+            }
+        }
+        return;
+    }
+
+
+    public void track_board(char[][] board, int row, int col, int i, int j){
+        /**
+         * 有值的改变的时候，board的判断条件就不能写成 board[i][j] == 'X'了
+         * 因为这时还有A的存在。
+         */
+        if(i < 0 || j < 0 || i == row || j == col || board[i][j] != 'O'){
+            return;
+        }
+        board[i][j] = 'A';
+        track_board(board, row, col, i-1, j);
+        track_board(board, row, col, i+1, j);
+        track_board(board, row, col, i, j-1);
+        track_board(board, row, col, i, j+1);
+    }
+
+    /**
+     * @Author Yang
+     * @Date 2020/12/11 12:33
+     * @Description 单词搜索
+     */
+    boolean flag = false;
+    public boolean exist(char[][] board, String word){
+        if(board == null || word == null)
+            return false;
+        char[] chars = word.toCharArray();
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] used = new boolean[row][col];
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == chars[0]){
+                    tracking_exist(board, chars, used, row, col, i, j, 0);
+                    if(flag)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void tracking_exist(char[][] board, char[]chars, boolean[][] used, int row, int col, int i, int j, int depth){
+        if(i < 0 || j < 0 || i == row || j == col || used[i][j] || board[i][j] != chars[depth]){
+            return;
+        }
+        if(depth == chars.length - 1){
+            flag = true;
+            return;
+        }
+        used[i][j] = true;
+        tracking_exist(board, chars, used, row, col, i-1, j, depth+1);
+        tracking_exist(board, chars, used, row, col, i+1, j, depth+1);
+        tracking_exist(board, chars, used, row, col, i, j-1, depth+1);
+        tracking_exist(board, chars, used, row, col, i, j+1, depth+1);
+        used[i][j] = false;
+        return;
+    }
+
+    public static void main(String[] args) {
+        char[][] grid = new char[][]{{'1','1','0','0','0'},{'1','1','0','0','0'},{'0','0','1','0','0'},{'0','0','0','1','1'}};
+        System.out.println(numIslands(grid));
+
     }
 }
