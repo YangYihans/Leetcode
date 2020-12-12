@@ -227,6 +227,91 @@ public class backTracking {
 
     /**
      * @Author Yang
+     * @Date 2020/12/12 11:53
+     * @Description 组合总和III
+     * 找出所有相加之和为 n 的 k 个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合中不存在重复的数字。
+     */
+    public List<List<Integer>> combinationSum3(int k, int n){
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        tracking_combination(n, k, 0, 1, path, result);
+        return result;
+    }
+
+    public void tracking_combination(int n, int k, int depth, int start, List<Integer> path, List<List<Integer>>result){
+        /**
+         * 深度和target都满足的情况才添加
+         */
+        if(depth == k){
+            if(n == 0){
+                result.add(new ArrayList<>(path));
+                return;
+            }
+            return;
+        }
+        // 1 - 9
+        for(int i = start; i <= 9; i++){
+            if(i > n){
+                break;
+            }
+            path.add(i);
+            tracking_combination(n-i, k, depth+1, i+1, path, result);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    /**
+     * @Author Yang
+     * @Date 2020/12/12 14:58
+     * @Description 377.组合总数IV
+     * 给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数。
+     */
+    static int total_count = 0;
+    public static int combinationSum4(int[] nums, int target){
+        if(nums == null || nums.length == 0)
+            return 0;
+        Arrays.sort(nums);
+        tracking_sum(nums, target, 0);
+        return total_count;
+    }
+
+    /**
+     * 回溯法对target检索nums每个数字会超时，因为当数组有1而target又比较大时，dfs的规模太大。--- 超时
+     * 组合类问题都可以使用[动态规划]，即根据最后一次选取的状态递推到当前状态
+     */
+    public static void tracking_sum(int[] nums, int target, int start){
+        if(target == 0){
+            total_count++;
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] > target)
+                break;
+            tracking_sum(nums, target - nums[i], start);
+        }
+    }
+
+    /**
+     * 回溯法：自顶向下
+     * 动态规划：自底向上
+     */
+    public int combinationSum4_dp(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        // 这个值被其它状态参考，设置为 1 是合理的
+        dp[0] = 1;
+
+        for (int i = 1; i <= target; i++) {
+            for (int num : nums) {
+                if (num <= i) {
+                    dp[i] += dp[i - num];
+                }
+            }
+        }
+        return dp[target];
+    }
+
+    /**
+     * @Author Yang
      * @Date 2020/12/9 10:31
      * @Description 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
      */
@@ -473,9 +558,75 @@ public class backTracking {
         return;
     }
 
+    /**
+     * @Author Yang
+     * @Date 2020/12/12 10:28
+     * @Description 784.字母大小写全排列
+     * 给定一个字符串S，通过将字符串S中的每个字母转变大小写，我们可以获得一个新的字符串。返回所有可能得到的字符串集合
+     * 思路： 和子集的思路相同
+     */
+    public List<String> letterCasePermutation(String S){
+        List<String> result = new ArrayList<>();
+        if(S == null || S.length() == 0)
+            return result;
+        char[] chars = S.toCharArray();
+        int len = chars.length;
+        tracking_letter(chars, 0, len, result);
+        return result;
+    }
+    public void tracking_letter(char[] chars, int index, int len, List<String> result){
+        if(index == len){
+            result.add(new String(chars));
+            return;
+        }
+        tracking_letter(chars, index+1, len, result);
+        if(Character.isLetter(chars[index])){
+            /**
+             * 如果是小写字符，减去32得到大写字符。
+             * 如果是大写字符，加上32得到小写字符。
+             * 可以使用 异或 1<<5 的方法得到
+             */
+            chars[index] ^= 1 << 5;
+            tracking_letter(chars, index+1, len, result);
+        }
+        return;
+    }
+    
+    /**
+     * @Author Yang
+     * @Date 2020/12/12 11:17
+     * @Description 22.括号生成
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     */
+    public static List<String> generateParenthesis(int n){
+        List<String> result = new ArrayList<>();
+        if(n == 0)
+            return result;
+        int left_count = n;
+        int right_count = n;
+        String path = "";
+        tracking_generate(left_count, right_count, path, result);
+        return result;
+    }
+    public static void tracking_generate(int left_count, int right_count, String path, List<String> result){
+        if(left_count == 0 && right_count == 0){
+            result.add(new String(path));
+            return;
+        }
+        if(left_count > right_count){
+            return;
+        }
+        if(left_count > 0){
+            tracking_generate(left_count - 1, right_count, path+"(", result);
+        }
+        if(right_count > 0){
+            tracking_generate(left_count, right_count - 1, path+")", result);
+        }
+    }
+
     public static void main(String[] args) {
-        char[][] grid = new char[][]{{'1','1','0','0','0'},{'1','1','0','0','0'},{'0','0','1','0','0'},{'0','0','0','1','1'}};
-        System.out.println(numIslands(grid));
+        int[] nums = new int[]{2,1,3};
+        System.out.println(combinationSum4(nums, 32));
 
     }
 }
