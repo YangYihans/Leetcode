@@ -1,6 +1,6 @@
-import org.omg.CORBA.INTERNAL;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class sort {
     /**
@@ -262,6 +262,30 @@ public class sort {
         return -1;
     }
 
+    /**
+     * @Author Yang
+     * @Date 2020/12/16 11:29
+     * @Description 二维搜素矩阵
+     * 对于一个行列数值均是递增的二维数组进行搜索
+     */
+    public boolean searchMatrix(int[][] matrix, int target){
+        if(matrix == null || matrix[0].length == 0){
+            return false;
+        }
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int i = 0, j = col -1;
+        while(i < row && i >=0 && j < col && j >= 0){
+            if(matrix[i][j] == target){
+                return true;
+            }else if(matrix[i][j] < target){
+                i++;
+            }else {
+                j--;
+            }
+        }
+        return false;
+    }
 
     private static void swap(int[] nums, int left, int right) {
         int temp = nums[left];
