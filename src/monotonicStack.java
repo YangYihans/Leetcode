@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.model.core.EnumLeafInfo;
+
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Stack;
@@ -204,5 +206,62 @@ public class monotonicStack {
         }else{
             return compare(nums1, p1+1, nums2, p2+1);
         }
+    }
+
+    /**
+     * @Author Yang
+     * @Date 2021/3/31 11:36
+     * @Description 496.下一个更大的元素
+     */
+    public static int[] nextGreaterElement(int[] nums1, int[] nums2){
+        if(nums1.length == nums2.length && nums2.length == 1){
+            return new int[]{-1};
+        }
+        Stack<Integer> stack = new Stack<>();
+        int[] next = new int[nums2.length];
+        int[] res = new int[nums1.length];
+        Arrays.fill(next, -1);
+        for(int i = 0; i < nums2.length; i++){
+            while(!stack.isEmpty() && nums2[stack.peek()] < nums2[i]){
+                next[stack.peek()] = nums2[i];
+                stack.pop();
+            }
+            stack.push(i);
+        }
+        for(int i = 0; i < nums1.length; i++){
+            for(int j = 0; j < nums2.length; j++){
+                if(nums1[i] == nums2[j]){
+                    res[i] = next[j];
+                }
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * @Author Yang
+     * @Date 2021/3/31 11:55
+     * @Description 503.下一个更大的元素II 数组是环形的
+     */
+    public int[] nextGreaterElements(int[] nums) {
+        int len = nums.length;
+        int[] res = new int[len];
+        Arrays.fill(res, -1);  //默认值为-1
+        Stack<Integer> stack = new Stack<>();  // stack中存放的是索引
+        for(int i = 0; i < 2 * len; i++){
+            int num = nums[i % len];
+            while(!stack.isEmpty() && num > nums[stack.peek()]){
+                res[stack.pop()] = num;
+            }
+            if(i < len){
+                stack.push(i);
+            }
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        nextGreaterElement(new int[]{4,1,2}, new int[]{1,3,4,2});
     }
 }
