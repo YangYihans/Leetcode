@@ -1,4 +1,5 @@
 import com.sun.org.apache.xml.internal.utils.StringToIntTable;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
@@ -430,6 +431,47 @@ public class backTracking {
     }
 
     /**
+     * @Author Yang
+     * @Date 2020/12/13 10:57
+     * @Description 面试08.08 有重复字符串的组合
+     * 和排列组合II 属于同一个类型， 需要注意的是list<String>转换为String[].
+     */
+    public String[] permutation(String S){
+        List<String> list = new ArrayList<>();
+        if(S == null){
+            return new String[]{};
+        }
+        char[] chars = S.toCharArray();
+        Arrays.sort(chars);
+        int len = chars.length;
+        boolean[] used = new boolean[len];
+        String path = "";
+        tracking_permutation(chars, len, used, path, list);
+        String[] result = new String[list.size()];
+        list.toArray(result);
+        return result;
+    }
+    public void tracking_permutation(char[] chars, int len, boolean[] used, String path, List<String> list){
+        if(path.length() == len){
+            list.add(new String(path));
+            return;
+        }
+        for(int i = 0; i < len; i++){
+            if(used[i]){
+                continue;
+            }
+            if(i > 0 && !used[i-1] && chars[i-1] == chars[i]){
+                continue;
+            }
+            path += chars[i];
+            used[i] = true;
+            tracking_permutation(chars, len, used, path, list);
+            used[i] = false;
+            path = path.substring(0, path.length() - 1);
+        }
+    }
+
+    /**
      * 类型二：
      * Flood 是「洪水」的意思，Flood Fill 直译是「泛洪填充」的意思，体现了洪水能够从一点开始，迅速填满当前位置附近的地势低的区域。
      *
@@ -624,9 +666,36 @@ public class backTracking {
         }
     }
 
+    public static int total_possible_count = 0;   // 全局变量， 记录所有组合次数
+    public static int getPossibleCount(int m, int n, int s){
+        tracking_getCount(m, n, s,0, 1);  // 递归初始条件
+        return total_possible_count;
+    }
+
+    // 取值1-m, 个数=n, 目标是s.
+    public static void tracking_getCount(int m, int n, int target, int depth, int start){
+        if(depth == n){
+            if(target == 0){  // 满足条件 n个数 target = s
+                total_possible_count++;
+                return;
+            }
+            return;
+        }
+        for(int i = start; i <= m; i++){
+            if(i > target){  // 剪枝, 比target大就直接丢弃
+                break;
+            }
+            /**
+             * target = target - i；  每一轮target减少i，
+             * depth = depth + 1；    每一轮深度加1
+             * start = i + 1；        每一轮开始点从i+1开始，避免重复
+             */
+            tracking_getCount(m, n, target-i, depth+1, i+1);
+        }
+    }
+
     public static void main(String[] args) {
-        int[] nums = new int[]{2,1,3};
-        System.out.println(combinationSum4(nums, 32));
+        System.out.println(getPossibleCount(9,3,7));
 
     }
 }
