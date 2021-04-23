@@ -1,4 +1,4 @@
-package leetcode.Dynamic_planning;
+package leetcode.Dynamic_planning.lisSeries;
 
 import java.util.Arrays;
 
