@@ -1,11 +1,11 @@
-package leetcode.Dynamic_planning;
+package leetcode.Dynamic_planning.LCS;
 /**
  * @Author Yang
  * @Date 2021/4/5 10:53
  * @Description 1143.最长公共子序列
  * 模板类型题目
  * dp[i][j]表示对于s1[1...i]和s2[1...j]他们的LCS长度是dp[i][j]
- * 转移方程：如果s1[i] == s2[j]那么这个字符一定是在lck中， 否则至少有一个不在，就需要丢弃一个。
+ * 转移方程：如果s1[i] == s2[j]那么这个字符一定是在lcs中， 否则至少有一个不在，就需要丢弃一个。
  */
 public class longestCommonSubsequence {
     public int longestCommonSubsequence(String text1, String text2){

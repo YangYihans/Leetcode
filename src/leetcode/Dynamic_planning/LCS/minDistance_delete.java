@@ -1,12 +1,15 @@
-package leetcode.Dynamic_planning;
+package leetcode.Dynamic_planning.LCS;
+
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * @Author Yang
  * @Date 2021/4/5 11:47
  * @Description 583. 两个字符串的删除操作
  * 借鉴lcs的模板，画图进行分析
  */
-public class minDistance {
-    public int minDistance(String word1, String word2) {
+public class minDistance_delete {
+    public int minDistance_delete(String word1, String word2) {
         int len_word1 = word1.length();
         int len_word2 = word2.length();
         int[][] dp = new int[len_word1+1][len_word2+1];
