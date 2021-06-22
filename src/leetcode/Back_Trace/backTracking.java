@@ -1,31 +1,10 @@
-import com.sun.org.apache.xml.internal.utils.StringToIntTable;
-import org.omg.PortableInterceptor.INACTIVE;
+package leetcode.Back_Trace;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * 回溯的基本思想：
- * * 核心： 画图， 画出每个一支路，然后看哪里需要剪枝，考虑剪枝的条件。
- *
- * * 迭代终止条件： 可能是深度(depth)， 可能是数组的长度(nums.length)，可能是一个目标数(target).
- *
- * * 剪枝的基本思想：
- * * * 核心是画图看哪里需要剪枝，找到共同的规律。
- * * * 如果是不能使用重复的元素， 使用布尔类型的used数组进行剪枝.
- * * * 如果是前面的结果集会对后面的结果集造成重复， 使用开始指针 start来确定每次遍历的起始点。———— 一直向后， 就取不到前面的元素。
- * * * 有时候这两个会混合使用
- *
- * * add path的时机
- * * * 根据支路完结的条件进行判断， 比如depth达到， length达到， target达到等。
- * * * 对于子集这类题直接添加即可。
- * * * add时候一定要add(new ArrayList<>(path)), 直接add(path) 得到的结果都是[][][][].
- *
- * 注意：用于计数和输出结果的static不要放在回溯的参数
- */
 public class backTracking {
     HashMap<Character, String> map = new HashMap<>();
     List<String> result = new ArrayList<>();
@@ -55,88 +34,6 @@ public class backTracking {
 
     }
 
-    /**
-     * @Author Yang
-     * @Date 2020/12/8 11:14
-     * @Description 全排列
-     * 一个没有重复数字的序列，对它进行全排列
-     */
-    public List<List<Integer>> permute(int[] nums){
-        int len = nums.length;
-        List<List<Integer>> result = new ArrayList<>();
-        if(len == 0)
-            return result;
-        boolean[] used = new boolean[len];
-        List<Integer> path = new ArrayList<>();
-        tracking(nums, len, 0, path, used, result);
-        return result;
-    }
-    public void tracking(int[] nums, int len, int depth, List<Integer> path, boolean[] used, List<List<Integer>>result){
-        if(len == depth){
-            result.add(new ArrayList<>(path));
-            return;
-        }
-        for(int i = 0; i < len; i++){
-            if(!used[i]){
-                path.add(nums[i]);
-                /**
-                 * 这样在考虑下一个位置的时候，就能够以 O(1) 的时间复杂度判断这个数是否被选择过，这是一种「以空间换时间」的思想。
-                 */
-                used[i] = true;
-                tracking(nums, len, depth+1, path, used, result);
-                /**
-                 * 状态重置
-                 * 在回头之后，状态变量需要设置和先前的一样，因此在回到上一层节点的时候，需要撤销上一次的选择。
-                 *
-                 * 从深层节点到浅层节点的过程，代码形式上和递归之前的是对称的。
-                 */
-                used[i] = false;
-                path.remove(path.size() - 1);
-            }
-        }
-    }
-
-    /**
-     * @Author Yang
-     * @Date 2020/12/8 12:21
-     * @Description 含有重复数字的全排列
-     */
-    public List<List<Integer>> permuteUnique(int[] nums){
-        int len = nums.length;
-        List<List<Integer>> result = new ArrayList<>();
-        if(len == 0){
-            return result;
-        }
-        /**
-         * 排序是剪枝的基础
-         */
-        Arrays.sort(nums);
-        boolean[] used = new boolean[len];
-        List<Integer> path = new ArrayList<>();
-        tracking_unique(nums, len, 0, used, path, result);
-        return result;
-    }
-    public void tracking_unique(int[] nums, int len, int depth, boolean[] used, List<Integer> path, List<List<Integer>> result){
-        if(len == depth){
-            result.add(new ArrayList<>(path));
-            return;
-        }
-        for(int i = 0; i < len; i++){
-            if(used[i])
-                continue;
-            /**
-             * 剪枝
-             */
-            if(i > 0 && nums[i] == nums[i-1] && !used[i-1]){
-                continue;
-            }
-            path.add(nums[i]);
-            used[i] = true;
-            tracking_unique(nums, len, depth + 1, used, path, result);
-            used[i] = false;
-            path.remove(path.size() - 1);
-        }
-    }
 
     /**
      * @Author Yang

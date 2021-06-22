@@ -165,4 +165,26 @@ public class heap {
         }
         return result;
     }
+
+    int[] nums = new int[]{2,3,5};
+    public int nthUglyNumber(int n) {
+        HashSet<Long> set = new HashSet<>();
+        Queue<Long> queue = new PriorityQueue<>();
+        set.add(1L);
+        queue.add(1L);
+        for(int i = 1; i <= n; i++){
+            long x = queue.poll();
+            if(i == n){
+                return (int) x;
+            }
+            for(int num : nums){
+                long t = num * x;
+                if(!set.contains(t)){
+                    set.add(t);
+                    queue.add(t);
+                }
+            }
+        }
+        return -1;
+    }
 }

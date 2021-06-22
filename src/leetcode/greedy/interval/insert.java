@@ -21,7 +21,7 @@ public class insert {
         int end = newInterval[1];
         for(int i = 0; i < intervals.length; i++){
             int[] interval = intervals[i];
-            if(interval[1] < start || interval[0] > end){ // 如果当前区间的end < 待插入区间的start || 当前区间的end < 待插入区间的start 说明两个区间是没有交集的
+            if(interval[1] < start || interval[0] > end){ // 如果当前区间的end < 待插入区间的start || 当前区间的start > 待插入区间的end 说明两个区间是没有交集的
                 list.add(new int[]{interval[0], interval[1]});
             }
             else{  // 有交集的情况， 直接更新相交区间的start和end
