@@ -3,6 +3,9 @@ package leetcode.Binary_Search;
  * @Author Yang
  * @Date 2021/4/8 21:58
  * @Description 34. 在排序数组中查找元素的第一个和最后一个位置
+ * 二分是从中间开始找的，所以找的必然是：条件区间中靠近中心的边界值。
+ * 如果要找的是左边界: left --- mid --- right 所以判断条件是 nums[mid] >= target
+ * 同理如果要找的是有边界，判断条件是： nums[mid] <= target
  */
 public class searchRange {
     public static int[] searchRange(int[] nums, int target){
