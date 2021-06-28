@@ -13,7 +13,7 @@ public class shipWithinDays {
         int left = getMax(weights), right = getSum(weights);
         while(left < right){
             int mid = left + (right - left) / 2;
-            if(canCarry(weights, mid, D)){
+            if(canCarry_II(mid, weights, D)){
                 right = mid;
             }else{
                 left = mid + 1;
@@ -22,17 +22,36 @@ public class shipWithinDays {
         return left;
     }
 
-    private static boolean canCarry(int[] weights, int mid, int d) {
-        int day = 0, patch = 0, i = 0, len = weights.length;
-        while(i < len){
-           if(patch + weights[i] <= mid){
-               patch += weights[i++];
-               continue;
-           }
-           day++;
-           patch = 0;
+//    private static boolean canCarry_I(int[] weights, int mid, int d) {
+//        int day = 0, patch = 0, i = 0, len = weights.length;
+//        while(i < len){
+//           if(patch + weights[i] <= mid){
+//               patch += weights[i++];
+//               continue;
+//           }
+//           day++;
+//           patch = 0;
+//        }
+//        return day+1 <= d;
+//    }
+
+    public static boolean canCarry_II(int mid, int[] weights, int days){
+        int real_day = 1, sum = 0, index = 0, len = weights.length;
+        while(index < len){
+            if(sum <= mid){
+                sum += weights[index];
+                index++;
+            }else{
+                sum = 0;
+                index = index - 1;
+                real_day++;
+            }
         }
-        return day+1 <= d;
+        /**
+         * 最后一次计算的后处理，可能存在加上最后一天的重量后sum超出的情况，这时需要对real_day + 1;
+         */
+        real_day = sum > mid ? real_day + 1 : real_day;
+        return real_day <= days;
     }
 
     private static int getSum(int[] weights) {
@@ -54,7 +73,7 @@ public class shipWithinDays {
     }
 
     public static void main(String[] args) {
-        System.out.println(shipWithinDays(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 5));
+        System.out.println(shipWithinDays(new int[]{3,2,2,4,1,4}, 3));
     }
 
 }
