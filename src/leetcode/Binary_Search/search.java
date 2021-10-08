@@ -16,6 +16,9 @@ public class search {
         }
         int left = 0, right = len -1;
         while(left <= right){
+            /**
+             * 恢复二分的阶段性，让左右边界内的值存在阶段性
+             */
             while(left < right && nums[left] == nums[left+1]){
                 left++;
             }
@@ -80,7 +83,41 @@ public class search {
         return -1;
     }
 
+    public static int search_III(int[] nums, int target){
+        int len = nums.length;
+        if(len == 0){
+            return -1;
+        }
+        if(len == 1){
+            return nums[0] == target ? 0 : -1;
+        }
+        int left = 0, right = len - 1;
+        while(left < right){
+            int mid = left + right + 1 >> 1;
+            if(nums[mid] >= nums[0]){
+                left = mid ;
+            }else{
+                right = mid - 1;
+            }
+        }
+        if(target >= nums[0]){
+            left = 0;
+        }else{
+            left = left + 1;
+            right = len - 1;
+        }
+        while(left < right){
+            int mid = left + right + 1 >> 1;
+            if(nums[mid] >= target){
+                right = mid;
+            }else{
+                left = mid + 1;
+            }
+        }
+        return nums[right] == target ? right : -1;
+     }
+
     public static void main(String[] args) {
-        System.out.println(search(new int[]{3,1}, 1));
+        System.out.println(search_III(new int[]{3,1}, 1));
     }
 }

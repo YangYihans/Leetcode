@@ -17,6 +17,9 @@ public class minDays {
         }
         int left = Integer.MAX_VALUE;
         int right = Integer.MIN_VALUE;
+        /**
+         * 确定二分的左右边界
+         */
         for(int b : bloomDay){
             left = Math.min(left, b);
             right = Math.max(right, b);
@@ -35,6 +38,9 @@ public class minDays {
     private static boolean isOk(int[] bloomDay, int mid, int m, int k) {
         int count = 0, res = 0;
         for(int i = 0; i < bloomDay.length; i++){
+            /**
+             * 当前天数限制下，是否能开，同时也解决了不相邻的问题。
+             */
             if(bloomDay[i] <= mid){
                 count++;
                 if(count == k){
